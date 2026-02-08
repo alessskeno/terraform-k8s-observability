@@ -34,7 +34,7 @@ You can use this module directly from GitHub without cloning the repository. Add
 
 ```hcl
 module "observability" {
-  source = "[github.com/](https://github.com/alessskeno/terraform-k8s-observability?ref=v1.0.0)"
+  source = "github.com/alessskeno/terraform-k8s-observability//modules/observability?ref=v1.0.0"
 
   # --- Environment & Global Settings ---
   env            = "prod"
