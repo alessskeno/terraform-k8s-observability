@@ -5,8 +5,8 @@ locals {
 }
 
 module "observability" {
-  # source = "github.com/alessskeno/terraform-k8s-observability//modules/observability?ref=v1.0.0"
-  source = "../../modules/observability" # local development
+  source = "github.com/alessskeno/terraform-k8s-observability//modules/observability?ref=v1.0.0"
+  # source = "../../modules/observability" # local development
 
   # ============================================================================
   # 1. Environment & Global Settings
