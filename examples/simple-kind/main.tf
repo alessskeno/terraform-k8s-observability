@@ -43,7 +43,7 @@ module "observability" {
   grafana_enabled    = true
 
   loki_enabled  = true
-  mimir_enabled = false
+  mimir_enabled = true
   tempo_enabled = true
 
   alloy_enabled         = true

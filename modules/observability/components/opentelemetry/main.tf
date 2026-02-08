@@ -14,28 +14,7 @@ resource "kubernetes_namespace" "opentelemetry" {
   }
 }
 
-resource "kubectl_manifest" "opentelemetry_operator_cert" {
-  count = var.opentelemetry_enabled ? 1 : 0
-  yaml_body = yamlencode({
-    apiVersion = "cert-manager.io/v1"
-    kind       = "Certificate"
-    metadata = {
-      name      = "opentelemetry-operator-serving-cert"
-      namespace = kubernetes_namespace.opentelemetry[0].metadata[0].name
-    }
-    spec = {
-      dnsNames = [
-        "opentelemetry-operator-webhook.${kubernetes_namespace.opentelemetry[0].metadata[0].name}.svc",
-        "opentelemetry-operator-webhook.${kubernetes_namespace.opentelemetry[0].metadata[0].name}.svc.cluster.local"
-      ]
-      issuerRef = {
-        kind = "ClusterIssuer"
-        name = "cluster-ca-issuer"
-      }
-      secretName = "opentelemetry-operator-controller-manager-service-cert"
-    }
-  })
-}
+
 
 resource "helm_release" "opentelemetry_operator" {
   count           = var.opentelemetry_enabled ? 1 : 0
@@ -53,12 +32,14 @@ resource "helm_release" "opentelemetry_operator" {
       admissionWebhooks = {
         certManager = {
           enabled = true
+          issuerRef = {
+            kind = "ClusterIssuer"
+            name = "cluster-ca-issuer"
+          }
         }
       }
     })
   ]
-
-  depends_on = [kubectl_manifest.opentelemetry_operator_cert]
 }
 
 
