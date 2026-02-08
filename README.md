@@ -20,7 +20,19 @@ A comprehensive, modular Terraform solution for deploying a full observability s
 │   └── observability/   # Core module (The product)
 │       ├── main.tf
 │       ├── variables.tf
+│       ├── outputs.tf
+│       ├── versions.tf
 │       └── components/  # Internal sub-modules (Loki, Tempo, etc.)
+│           ├── alloy/
+│           ├── minio/
+│           ├── mimir/
+│           ├── opentelemetry/
+│           ├── loki/
+│           ├── tempo/
+│           ├── prometheus/
+│           ├── grafana/
+│           ├── traefik/
+│           └── cert-manager/
 ├── examples/
 │   └── simple-kind/     # Ready-to-run example for Kind clusters
 └── README.md            # This documentation
@@ -37,7 +49,7 @@ module "observability" {
   source = "github.com/alessskeno/terraform-k8s-observability//modules/observability?ref=v1.0.0"
 
   # --- Environment & Global Settings ---
-  env            = "prod"
+  env            = "dev"
   domain         = "example.com"
   cluster_engine = "kind"     # Options: kind, rke2, eks
 
@@ -112,7 +124,7 @@ To contribute or test locally:
 
 1.  Clone the repository:
     ```bash
-    git clone [https://github.com/](https://github.com/)<YOUR_USERNAME>/terraform-k8s-riddlex.git
+    git clone github.com/alessskeno/terraform-k8s-observability.git
     ```
 2.  Navigate to the example:
     ```bash
