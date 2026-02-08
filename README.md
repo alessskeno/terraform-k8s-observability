@@ -6,7 +6,7 @@ A comprehensive, modular Terraform solution for deploying a full observability s
 
 *   **Ingress Controller**: Traefik (v3) with configurable NodePort/LoadBalancer.
 *   **Metrics**: Prometheus (kube-prometheus-stack) & Mimir (optional).
-*   **Logs**: Loki (scalable log aggregation).
+*   **Logs**: Grafana Alloy and Loki (scalable log aggregation).
 *   **Traces**: Tempo (distributed tracing) & OpenTelemetry.
 *   **Visualization**: Grafana (pre-configured datasources).
 *   **Storage**: MinIO (self-hosted S3-compatible) or External S3 (AWS/GCP).
