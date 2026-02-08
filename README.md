@@ -52,7 +52,7 @@ module "observability" {
   env            = "dev"
   domain         = "example.com"
   cluster_engine = "kind"     # Options: kind, rke2, eks
-
+  storage_class  = "standard" # Required: Storage Class for PVCs
   # --- Ingress ---
   traefik_enabled    = true
   ingress_class_name = "traefik"
@@ -101,22 +101,50 @@ terraform apply
 
 ## Inputs
 
+
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| `env` | Environment name (dev, prod) | `string` | n/a | **Yes** |
-| `domain` | Base domain for Ingress | `string` | n/a | **Yes** |
-| `cluster_engine` | Cluster type (`kind`, `rke2`) | `string` | `"rke2"` | No |
-| `traefik_enabled` | Enable Traefik Ingress | `bool` | `true` | No |
+| `env` | Environment name (e.g., dev, prod) | `string` | n/a | **Yes** |
+| `domain` | Base domain for Ingress resources | `string` | n/a | **Yes** |
+| `cluster_engine` | Cluster engine type (`rke2`, `kind`, etc.) | `string` | `"rke2"` | No |
+| `storage_class` | Storage Class for PVCs | `string` | n/a | **Yes** |
+| `dns_service` | DNS Service address (e.g., coredns) | `string` | `"rke2-coredns..."` | No |
+| `ingress_class_name` | Ingress class name | `string` | `"traefik"` | No |
+| **Feature Toggles** | | | | |
+| `traefik_enabled` | Enable Traefik Ingress Controller | `bool` | `true` | No |
+| `cert_manager_enabled` | Enable Cert-Manager | `bool` | `true` | No |
 | `minio_enabled` | Enable self-hosted MinIO | `bool` | `true` | No |
-| `minio_access_key` | Access Key for MinIO | `string` | n/a | If MinIO enabled |
-| `minio_secret_key` | Secret Key for MinIO | `string` | n/a | If MinIO enabled |
-| `s3_bucket_name` | Bucket name for object storage | `string` | `""` | If MinIO disabled |
-| `grafana_admin_password` | Grafana admin password | `string` | `"admin"` | No |
+| `prometheus_enabled` | Enable Prometheus Stack | `bool` | `true` | No |
+| `grafana_enabled` | Enable Grafana | `bool` | `true` | No |
+| `loki_enabled` | Enable Loki (Logs) | `bool` | `true` | No |
+| `tempo_enabled` | Enable Tempo (Tracing) | `bool` | `true` | No |
+| `mimir_enabled` | Enable Mimir (Long-term Metrics) | `bool` | `true` | No |
+| `alloy_enabled` | Enable Grafana Alloy (Collector) | `bool` | `true` | No |
+| `opentelemetry_enabled` | Enable OpenTelemetry Operator | `bool` | `true` | No |
+| **Storage & Secrets** | | | | |
+| `minio_access_key` | MinIO Root User | `string` | `"admin"` | No |
+| `minio_secret_key` | MinIO Root Password | `string` | `"password"` | No |
+| `s3_bucket_name` | AWS S3 Bucket Name (if MinIO disabled) | `string` | `""` | No |
+| `s3_region` | AWS S3 Region | `string` | `"us-east-1"` | No |
+| `s3_access_key` | AWS S3 Access Key | `string` | `""` | No |
+| `s3_secret_key` | AWS S3 Secret Key | `string` | `""` | No |
+| `s3_endpoint` | Custom S3 Endpoint | `string` | `""` | No |
+| `grafana_admin_password` | Grafana Admin Password | `string` | `"admin"` | No |
+| `cert_manager_cluster_issuer` | Cluster Issuer Name | `string` | `"cluster-ca-issuer"` | No |
+| **Storage Sizes** | | | | |
+| `minio_storage_size` | PVC Size for MinIO | `string` | `"3Gi"` | No |
+| `loki_storage_size` | PVC Size for Loki | `string` | `"3Gi"` | No |
+| `tempo_storage_size` | PVC Size for Tempo | `string` | `"10Gi"` | No |
+| `mimir_storage_size` | PVC Size for Mimir | `string` | `"10Gi"` | No |
+| `prometheus_server_storage_size` | PVC Size for Prometheus Server | `string` | `"5Gi"` | No |
+| `alertmanager_storage_size` | PVC Size for Alertmanager | `string` | `"10Gi"` | No |
+| `grafana_storage_size` | PVC Size for Grafana | `string` | `"10Gi"` | No |
 
 ## Outputs
 
 * `grafana_url`: URL for Grafana dashboard.
-* `minio_console_url`: URL for MinIO console (if enabled).
+* `prometheus_url`: URL for Prometheus dashboard.
+
 
 ## Development
 
