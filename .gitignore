@@ -1,0 +1,12 @@
+# .gitignore
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+.terraform.lock.hcl
+.idea/
+.vscode/

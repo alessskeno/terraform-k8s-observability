@@ -1,0 +1,25 @@
+domain                  = "example.com"
+
+# Cluster Connection Details (Obtain from ~/.kube/config or Cloud Provider)
+# Note: Ensure these are base64 encoded if following the variable definition, 
+# or ensure the provider block decodes them appropriately.
+# The example variables.tf expects base64 strings if you use them directly, 
+# but often it's easier to use file paths in a real setup. 
+# For this example, we assume you provide the raw base64 content.
+
+kubernetes_cluster      = "https://127.0.0.1:6443"
+kubernetes_cluster_ca   = "LS0tLS1..."
+kubernetes_cluster_cert = "LS0tLS1..."
+kubernetes_cluster_key  = "LS0tLS1..."
+
+grafana_admin_password  = "admin"
+
+minio_access_key        = "admin"
+minio_secret_key        = "password"
+
+# Optional External S3
+# s3_access_key           = ""
+# s3_secret_key           = ""
+# s3_endpoint             = ""
+# s3_region               = "us-east-1"
+# s3_bucket_name          = ""
