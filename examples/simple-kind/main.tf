@@ -6,6 +6,7 @@ locals {
 
 module "observability" {
   source = "github.com/alessskeno/terraform-k8s-observability//modules/observability?ref=v1.0.0"
+  # source = "../../modules/observability" # local development
 
   # ============================================================================
   # 1. Environment & Global Settings
@@ -43,7 +44,7 @@ module "observability" {
   grafana_enabled    = true
 
   loki_enabled  = true
-  mimir_enabled = true
+  mimir_enabled = false
   tempo_enabled = true
 
   alloy_enabled         = true
