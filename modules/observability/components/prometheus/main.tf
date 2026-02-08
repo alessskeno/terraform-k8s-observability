@@ -116,6 +116,10 @@ locals {
     grafana = {
       enabled       = var.grafana_enabled
       adminPassword = var.grafana_admin_password
+
+      initChownData = {
+        enabled = false
+      }
       additionalDataSources = concat(
         var.tempo_enabled ? [{
           name       = "Tempo"
