@@ -21,6 +21,29 @@ resource "helm_release" "kube_prometheus_stack" {
   ]
 }
 
+data "http" "mermin_dashboard" {
+  count = var.mermin_enabled ? 1 : 0
+  url   = "https://raw.githubusercontent.com/elastiflow/mermin/main/docs/internal-monitoring/grafana-mermin-app.json"
+}
+
+resource "kubernetes_config_map" "mermin_dashboard" {
+  count = var.mermin_enabled ? 1 : 0
+
+  metadata {
+    name      = "mermin-grafana-dashboard"
+    namespace = kubernetes_namespace.prometheus[0].metadata[0].name
+
+    labels = {
+      grafana_dashboard = "1"
+      app               = "mermin"
+    }
+  }
+
+  data = {
+    "mermin-app.json" = data.http.mermin_dashboard[0].response_body
+  }
+}
+
 locals {
   prometheus_domain = "prometheus.${var.domain}"
 

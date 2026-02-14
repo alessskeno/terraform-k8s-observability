@@ -5,7 +5,7 @@ locals {
 }
 
 module "observability" {
-  source = "github.com/alessskeno/terraform-k8s-observability//modules/observability?ref=v1.0.0"
+  source = "github.com/alessskeno/terraform-k8s-observability//modules/observability?ref=v1.0.1"
   # source = "../../modules/observability" # local development
 
   # ============================================================================
@@ -43,12 +43,13 @@ module "observability" {
   prometheus_enabled = true
   grafana_enabled    = true
 
-  loki_enabled  = false
-  mimir_enabled = false
-  tempo_enabled = true
+  loki_enabled   = false
+  mimir_enabled  = false
+  tempo_enabled  = true
+  mermin_enabled = true
 
   alloy_enabled         = true
-  opentelemetry_enabled = true
+  opentelemetry_enabled = false
 
   # ============================================================================
   # 4. Storage & Persistence Configuration

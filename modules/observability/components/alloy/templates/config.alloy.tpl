@@ -1,3 +1,4 @@
+%{ if loki_enabled }
 // -----------------------------------------------------------------------------
 // 1. FORWARDING: Push to Loki
 // -----------------------------------------------------------------------------
@@ -83,8 +84,10 @@ loki.source.kubernetes "pod_logs" {
   targets    = discovery.relabel.pod_logs.output
   forward_to = [loki.process.aggregator.receiver]
 }
+%{ endif }
 
 
+%{ if loki_enabled }
 // -----------------------------------------------------------------------------
 // 3. LOG SOURCE: Node System Logs
 // -----------------------------------------------------------------------------
@@ -109,8 +112,10 @@ loki.source.file "node_system_logs" {
   targets    = discovery.relabel.node_logs.output
   forward_to = [loki.process.aggregator.receiver]
 }
+%{ endif }
 
 
+%{ if loki_enabled }
 // -----------------------------------------------------------------------------
 // 4. LOG SOURCE: Node Journal Logs
 // -----------------------------------------------------------------------------
@@ -137,7 +142,9 @@ loki.source.journal "rke2_server" {
   forward_to = [loki.process.aggregator.receiver]
 }
 %{ endif }
+%{ endif }
 
+%{ if loki_enabled }
 // -----------------------------------------------------------------------------
 // 5. PROCESSING & MULTILINE
 // -----------------------------------------------------------------------------
@@ -155,6 +162,7 @@ loki.process "aggregator" {
 
   forward_to = [loki.write.loki_endpoint.receiver]
 }
+%{ endif }
 
 // -----------------------------------------------------------------------------
 // 6. FUTURE PROOF: OpenTelemetry Receiver
@@ -174,14 +182,15 @@ otelcol.receiver.otlp "default" {
 
 otelcol.processor.batch "default" {
   output {
-    traces  = [otelcol.exporter.otlp.tempo.input]
-    metrics = [otelcol.exporter.prometheus.mimir.input]
+    traces  = [%{ if tempo_enabled }otelcol.exporter.otlp.tempo.input%{ endif }]
+    metrics = [%{ if mimir_enabled }otelcol.exporter.prometheus.mimir.input%{ endif }]
   }
 }
 
 // -----------------------------------------------------------------------------
 // 7. EXPORTERS
 // -----------------------------------------------------------------------------
+%{ if tempo_enabled }
 otelcol.exporter.otlp "tempo" {
   client {
     endpoint = "${tempo_endpoint}"
@@ -190,7 +199,9 @@ otelcol.exporter.otlp "tempo" {
     }
   }
 }
+%{ endif }
 
+%{ if mimir_enabled }
 otelcol.exporter.prometheus "mimir" {
   forward_to = [prometheus.remote_write.mimir.receiver]
 }
@@ -200,3 +211,4 @@ prometheus.remote_write "mimir" {
     url = "${mimir_url}"
   }
 }
+%{ endif }

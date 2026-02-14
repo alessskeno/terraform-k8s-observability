@@ -29,6 +29,13 @@ resource "helm_release" "opentelemetry_operator" {
 
   values = [
     yamlencode({
+      manager = {
+        autoInstrumentation = {
+          go = {
+            enabled = true
+          }
+        }
+      }
       admissionWebhooks = {
         certManager = {
           enabled = true
@@ -42,82 +49,49 @@ resource "helm_release" "opentelemetry_operator" {
   ]
 }
 
-
-# Apply Collector Configuration
-resource "kubectl_manifest" "otel_collector" {
-  count = var.opentelemetry_enabled ? 1 : 0
-  yaml_body = yamlencode({
-    apiVersion = "opentelemetry.io/v1beta1"
-    kind       = "OpenTelemetryCollector"
-    metadata = {
-      name      = "apps-telemetry"
-      namespace = kubernetes_namespace.opentelemetry[0].metadata[0].name
-    }
-    spec = {
-      mode = "deployment"
-      config = {
-        receivers = {
-          otlp = {
-            protocols = {
-              grpc = {}
-              http = {}
-            }
-          }
-        }
-        processors = {
-          batch = {}
-        }
-        exporters = {
-          otlp = {
-            endpoint = var.tempo_endpoint
-            tls = {
-              insecure = true
-            }
-          }
-        }
-        service = {
-          pipelines = {
-            traces = {
-              receivers  = ["otlp"]
-              processors = ["batch"]
-              exporters  = ["otlp"]
-            }
-          }
-        }
-      }
-    }
-  })
-  validate_schema = false
-  depends_on      = [helm_release.opentelemetry_operator]
-}
-
+# Unified Instrumentation Rules routed to Grafana Alloy
 resource "kubectl_manifest" "otel_instrumentation" {
   count = var.opentelemetry_enabled ? 1 : 0
   yaml_body = yamlencode({
     apiVersion = "opentelemetry.io/v1alpha1"
     kind       = "Instrumentation"
     metadata = {
-      name      = "my-instrumentation"
+      name      = "alloy-instrumentation"
       namespace = kubernetes_namespace.opentelemetry[0].metadata[0].name
     }
     spec = {
+      # Route ALL telemetry to your Grafana Alloy service
       exporter = {
-        endpoint = "http://apps-telemetry-collector.${kubernetes_namespace.opentelemetry[0].metadata[0].name}.svc.cluster.local:4317"
+        endpoint = "http://alloy.alloy.svc.cluster.local:4317"
       }
-      propagators = [
-        "tracecontext",
-        "baggage",
-        "b3"
-      ]
+      propagators = ["tracecontext", "baggage", "b3"]
       sampler = {
         type     = "parentbased_traceidratio"
-        argument = "0.25"
+        argument = "0.25" # 100% sampling for dev. Lower this for prod (e.g., "0.1")
       }
+
+      # Language-specific optimizations
       python = {
         env = [
           {
-            name  = "OTEL_EXPORTER_OTLP_ENDPOINT"
-            value = "http://apps-telemetry-collector.${kubernetes_namespace.opentelemetry[0].metadata[0].name}.svc.cluster.local:4318"
+            name  = "OTEL_LOGS_EXPORTER"
+            value = "none" # Turn off OTel logs if you use Promtail/Alloy for logging
+          }
+        ]
+      }
+      dotnet = {
+        env = [
+          {
+            name  = "OTEL_DOTNET_AUTO_TRACES_ADDITIONAL_SOURCES"
+            value = "MassTransit,Npgsql,OpenTelemetry.Instrumentation.StackExchangeRedis,MongoDB.Driver.Core.Extensions.DiagnosticSources" # Example: Add extra .NET trace sources
+          }
+        ]
+      }
+      go = {
+        env = [
+          {
+            name  = "OTEL_GO_AUTO_INCLUDE_DB_STATEMENT"
+            value = "true" # Forces the eBPF agent to capture actual SQL query text
           }
         ]
       }

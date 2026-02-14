@@ -42,3 +42,21 @@ variable "mimir_url" {
   type        = string
   default     = "http://mimir-gateway.mimir.svc.cluster.local/api/v1/push"
 }
+
+variable "loki_enabled" {
+  description = "Enable Loki log forwarding"
+  type        = bool
+  default     = false
+}
+
+variable "tempo_enabled" {
+  description = "Enable Tempo tracing"
+  type        = bool
+  default     = false
+}
+
+variable "mimir_enabled" {
+  description = "Enable Mimir metrics forwarding"
+  type        = bool
+  default     = false
+}

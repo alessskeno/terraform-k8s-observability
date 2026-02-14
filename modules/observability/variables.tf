@@ -7,6 +7,7 @@ variable "alloy_enabled" { default = true }
 variable "mimir_enabled" { default = true }
 variable "tempo_enabled" { default = true }
 variable "opentelemetry_enabled" { default = true }
+variable "mermin_enabled" { default = true }
 
 
 variable "cluster_engine" {

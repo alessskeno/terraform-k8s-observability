@@ -37,6 +37,9 @@ resource "kubernetes_config_map" "alloy_config" {
       skip_namespaces = local.skip_namespaces_str
       tempo_endpoint  = var.tempo_endpoint
       mimir_url       = var.mimir_url
+      loki_enabled    = var.loki_enabled
+      tempo_enabled   = var.tempo_enabled
+      mimir_enabled   = var.mimir_enabled
     })
   }
 }

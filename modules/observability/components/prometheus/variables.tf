@@ -27,6 +27,12 @@ variable "mimir_enabled" {
   default     = false
 }
 
+variable "mermin_enabled" {
+  description = "Enable Mermin"
+  type        = bool
+  default     = false
+}
+
 variable "loki_enabled" {
   description = "Enable Loki"
   type        = bool
