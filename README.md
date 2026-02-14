@@ -27,6 +27,7 @@ A comprehensive, modular Terraform solution for deploying a full observability s
 │           ├── minio/
 │           ├── mimir/
 │           ├── opentelemetry/
+│           ├── mermin/
 │           ├── loki/
 │           ├── tempo/
 │           ├── prometheus/
@@ -46,7 +47,7 @@ You can use this module directly from GitHub without cloning the repository. Add
 
 ```hcl
 module "observability" {
-  source = "github.com/alessskeno/terraform-k8s-observability//modules/observability?ref=v1.0.0"
+  source = "github.com/alessskeno/terraform-k8s-observability//modules/observability?ref=v1.0.1"
 
   # --- Environment & Global Settings ---
   env            = "dev"
@@ -67,6 +68,7 @@ module "observability" {
   grafana_enabled       = true
   loki_enabled          = true
   tempo_enabled         = true
+  mermin_enabled        = true
   cert_manager_enabled  = true
 
   # --- Security ---
@@ -121,6 +123,7 @@ terraform apply
 | `mimir_enabled` | Enable Mimir (Long-term Metrics) | `bool` | `true` | No |
 | `alloy_enabled` | Enable Grafana Alloy (Collector) | `bool` | `true` | No |
 | `opentelemetry_enabled` | Enable OpenTelemetry Operator | `bool` | `true` | No |
+| `mermin_enabled` | Enable Mermin (Network Observability) | `bool` | `true` | No |
 | **Storage & Secrets** | | | | |
 | `minio_access_key` | MinIO Root User | `string` | `"admin"` | No |
 | `minio_secret_key` | MinIO Root Password | `string` | `"password"` | No |
