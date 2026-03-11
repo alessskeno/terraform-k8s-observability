@@ -23,7 +23,7 @@ resource "helm_release" "tempo" {
 }
 
 locals {
-  tempo_domain = "tempo.${var.domain}"
+  tempo_domain = "tempo-${var.env}.${var.domain}"
 
   tempo_values = {
     global = {

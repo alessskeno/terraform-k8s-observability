@@ -5,5 +5,5 @@ output "prometheus_url" {
 
 output "prometheus_external_url" {
   description = "External URL for Prometheus"
-  value       = "https://prometheus.${var.domain}"
+  value       = "https://prometheus-${var.env}.${var.domain}"
 }

@@ -26,7 +26,7 @@ resource "helm_release" "loki" {
 }
 
 locals {
-  loki_domain = "loki.${var.domain}"
+  loki_domain = "loki-${var.env}.${var.domain}"
 
   object_store_type = var.storage_type == "s3" ? "s3" : "filesystem"
 

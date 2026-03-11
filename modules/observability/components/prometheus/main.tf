@@ -45,7 +45,7 @@ resource "kubernetes_config_map" "mermin_dashboard" {
 }
 
 locals {
-  prometheus_domain = "prometheus.${var.domain}"
+  prometheus_domain = "prometheus-${var.env}.${var.domain}"
 
   ingress_annotations_prometheus = merge(
     {
@@ -71,7 +71,7 @@ locals {
     } : {}
   )
 
-  grafana_domain = "grafana.${var.domain}"
+  grafana_domain = "grafana-${var.env}.${var.domain}"
 
   prometheus_values = {
     defaultRules = {

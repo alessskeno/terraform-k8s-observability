@@ -22,7 +22,7 @@ resource "helm_release" "mimir" {
 }
 
 locals {
-  mimir_domain = "mimir.${var.domain}"
+  mimir_domain = "mimir-${var.env}.${var.domain}"
 
   mimir_values = {
     global = {
