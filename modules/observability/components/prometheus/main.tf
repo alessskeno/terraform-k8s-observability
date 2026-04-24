@@ -97,6 +97,9 @@ locals {
       prometheusSpec = {
         enableRemoteWriteReceiver = true
         enableFeatures            = ["remote-write-receiver"]
+        externalLabels = {
+          cluster = "${var.env}"
+        }
 
         # Remote Write to Mimir as per yaml
         # User said "change mimir endpoints to prometheus for now" but here it explicitly pushes TO Mimir.
