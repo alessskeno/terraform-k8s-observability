@@ -78,6 +78,22 @@ locals {
       rules = {
         windows = false
       }
+      # Stamp `cluster` onto every chart-shipped PrometheusRule.
+      #
+      # Prometheus `externalLabels` (below) are only appended when alerts are
+      # SENT OUT to Alertmanager — they are not visible during rule evaluation.
+      # As a result, annotation templates in the default rules that reference
+      # {{ $labels.cluster }} (e.g. KubeStatefulSetReplicasMismatch's
+      # "...on cluster {{ $labels.cluster }}.") render empty in Prometheus's
+      # own UI and in notifications that evaluate annotations pre-send.
+      #
+      # `additionalRuleLabels` bakes the label directly onto each default
+      # rule so `$labels.cluster` is populated at evaluation time. Kept
+      # consistent with the `externalLabels.cluster` value so Alertmanager
+      # never sees a divergence between rule-level and external labels.
+      additionalRuleLabels = {
+        cluster = var.env
+      }
     }
 
     prometheus-windows-exporter = {
@@ -126,16 +142,16 @@ locals {
           }
         }
       }
-    ingress = {
-      enabled          = true
-      annotations      = local.ingress_annotations_prometheus
-      hosts            = [local.prometheus_domain]
-      ingressClassName = var.ingress_class_name
-      tls = [{
-        secretName = "prometheus-tls"
-        hosts      = [local.prometheus_domain]
-      }]
-    }
+      ingress = {
+        enabled          = true
+        annotations      = local.ingress_annotations_prometheus
+        hosts            = [local.prometheus_domain]
+        ingressClassName = var.ingress_class_name
+        tls = [{
+          secretName = "prometheus-tls"
+          hosts      = [local.prometheus_domain]
+        }]
+      }
     }
 
     grafana = {
