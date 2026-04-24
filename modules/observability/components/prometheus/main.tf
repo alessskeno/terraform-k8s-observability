@@ -123,16 +123,16 @@ locals {
           }
         }
 
-        ingress = {
-          enabled          = true
-          annotations      = local.ingress_annotations_prometheus
-          hosts            = [local.prometheus_domain]
-          ingressClassName = var.ingress_class_name
-          tls = [{
-            secretName = "prometheus-tls"
-            hosts      = [local.prometheus_domain]
-          }]
-        }
+      ingress = {
+        enabled          = true
+        annotations      = local.ingress_annotations_prometheus
+        hosts            = [local.prometheus_domain]
+        ingressClassName = var.ingress_class_name
+        tls = [{
+          secretName = "prometheus-tls"
+          hosts      = [local.prometheus_domain]
+        }]
+      }
       }
     }
 
