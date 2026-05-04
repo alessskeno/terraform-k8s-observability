@@ -106,7 +106,7 @@ locals {
 
     alertmanager = {
       # Add Alertmanager config here if needed
-      enabled = true
+      enabled = true  
     }
 
     prometheus = {

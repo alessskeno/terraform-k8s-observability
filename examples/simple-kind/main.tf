@@ -72,4 +72,18 @@ module "observability" {
   # Cert Configuration
   # Use "selfsigned-issuer" for local/dev (generates CA automatically)
   cert_manager_cluster_issuer = "cluster-ca-issuer"
+
+  # ============================================================================
+  # 6. Component Versions
+  # ============================================================================
+  alloy_version                  = "1.6.0"
+  cert_manager_version           = "1.14.0"
+  loki_version                   = "6.52.0"
+  mermin_version                 = "0.1.0"
+  mimir_version                  = "6.0.5"
+  minio_version                  = "5.4.0"
+  opentelemetry_operator_version = "0.105.0"
+  prometheus_version             = "81.5.0"
+  tempo_version                  = "2.0.0"
+  traefik_version                = "39.0.0"
 }

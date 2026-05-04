@@ -1,8 +1,8 @@
-
 module "cert_manager" {
   source = "./components/cert-manager"
 
   cert_manager_enabled        = var.cert_manager_enabled
+  cert_manager_version        = var.cert_manager_version
   cert_manager_cluster_issuer = var.cert_manager_cluster_issuer
   domain                      = var.domain
 }
@@ -11,6 +11,7 @@ module "minio" {
   source = "./components/minio"
 
   minio_enabled = var.minio_enabled
+  minio_version = var.minio_version
   access_key    = var.minio_access_key
   secret_key    = var.minio_secret_key
 
@@ -38,6 +39,7 @@ module "loki" {
 
   env                = var.env
   loki_enabled       = var.loki_enabled
+  loki_version       = var.loki_version
   domain             = var.domain
   dns_service        = var.dns_service
   ingress_class_name = var.ingress_class_name
@@ -64,6 +66,7 @@ module "mimir" {
 
   env                = var.env
   mimir_enabled      = var.mimir_enabled
+  mimir_version      = var.mimir_version
   domain             = var.domain
   dns_service        = var.dns_service
   ingress_class_name = var.ingress_class_name
@@ -81,6 +84,7 @@ module "tempo" {
 
   env                = var.env
   tempo_enabled      = var.tempo_enabled
+  tempo_version      = var.tempo_version
   domain             = var.domain
   dns_service        = var.dns_service
   ingress_class_name = var.ingress_class_name
@@ -101,6 +105,7 @@ module "prometheus" {
 
   env                = var.env
   prometheus_enabled = var.prometheus_enabled
+  prometheus_version = var.prometheus_version
   grafana_enabled    = var.grafana_enabled
 
   domain                 = var.domain
@@ -128,6 +133,7 @@ module "alloy" {
 
   env             = var.env
   alloy_enabled   = var.alloy_enabled
+  alloy_version   = var.alloy_version
   cluster_engine  = var.cluster_engine
   loki_url        = module.loki.loki_push_url
   skip_namespaces = ["cert-manager", "kube-system", "minio"]
@@ -139,9 +145,10 @@ module "alloy" {
 module "opentelemetry" {
   source = "./components/opentelemetry"
 
-  env                   = var.env
-  opentelemetry_enabled = var.opentelemetry_enabled
-  tempo_endpoint        = "tempo-distributor.tempo.svc.cluster.local:4317"
+  env                            = var.env
+  opentelemetry_enabled          = var.opentelemetry_enabled
+  opentelemetry_operator_version = var.opentelemetry_operator_version
+  tempo_endpoint                 = "tempo-distributor.tempo.svc.cluster.local:4317"
 
   depends_on = [
     module.cert_manager
@@ -152,6 +159,7 @@ module "traefik" {
   source = "./components/traefik"
 
   traefik_enabled = var.traefik_enabled
+  traefik_version = var.traefik_version
 }
 
 module "mermin" {
@@ -159,6 +167,7 @@ module "mermin" {
 
   env            = var.env
   mermin_enabled = var.mermin_enabled
+  mermin_version = var.mermin_version
 
   depends_on = [
     module.alloy

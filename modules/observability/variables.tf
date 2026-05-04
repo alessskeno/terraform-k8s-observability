@@ -91,3 +91,18 @@ variable "grafana_storage_size" { default = "10Gi" }
 
 # Mimir
 variable "mimir_storage_size" { default = "10Gi" }
+
+# ==============================================================================
+# Component Versions
+# ==============================================================================
+
+variable "alloy_version" { default = "1.6.0" }
+variable "cert_manager_version" { default = "1.14.0" }
+variable "loki_version" { default = "6.52.0" }
+variable "mermin_version" { default = "0.1.0" }
+variable "mimir_version" { default = "6.0.5" }
+variable "minio_version" { default = "5.4.0" }
+variable "opentelemetry_operator_version" { default = "0.105.0" }
+variable "prometheus_version" { default = "81.5.0" }
+variable "tempo_version" { default = "2.0.0" }
+variable "traefik_version" { default = "39.0.0" }
