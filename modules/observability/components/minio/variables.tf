@@ -4,11 +4,6 @@ variable "minio_enabled" {
   default     = true
 }
 
-variable "namespace" {
-  description = "Namespace to deploy minio"
-  type        = string
-}
-
 variable "minio_version" {
   description = "MinIO Chart Version"
   type        = string

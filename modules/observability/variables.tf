@@ -1,10 +1,5 @@
 variable "env" {}
 variable "domain" {}
-variable "namespace" {
-  description = "Namespace to deploy all components"
-  type        = string
-  default     = "observability"
-}
 variable "loki_enabled" { default = true }
 variable "prometheus_enabled" { default = true }
 variable "grafana_enabled" { default = true }

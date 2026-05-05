@@ -1,3 +1,9 @@
+resource "kubernetes_namespace" "tempo" {
+  count = var.tempo_enabled ? 1 : 0
+  metadata {
+    name = "tempo"
+  }
+}
 
 resource "helm_release" "tempo" {
   count           = var.tempo_enabled ? 1 : 0
@@ -5,7 +11,7 @@ resource "helm_release" "tempo" {
   repository      = "https://grafana-community.github.io/helm-charts/"
   chart           = "tempo-distributed"
   version         = var.tempo_version
-  namespace       = var.namespace
+  namespace       = kubernetes_namespace.tempo[0].metadata[0].name
   atomic          = false
   cleanup_on_fail = true
   timeout         = 900

@@ -1,3 +1,10 @@
+resource "kubernetes_namespace" "minio" {
+  count = var.minio_enabled ? 1 : 0
+  metadata {
+    name = "minio"
+  }
+}
+
 locals {
   # Conditional bucket creation
   tempo_buckets = var.tempo_enabled ? ["tempo-traces"] : []
@@ -22,7 +29,7 @@ resource "helm_release" "minio" {
   repository = "https://charts.min.io/"
   chart      = "minio"
   version    = var.minio_version
-  namespace  = var.namespace
+  namespace  = kubernetes_namespace.minio[0].metadata[0].name
   atomic     = false
   wait       = false
 
@@ -51,3 +58,5 @@ resource "helm_release" "minio" {
     })
   ]
 }
+
+

@@ -1,3 +1,9 @@
+resource "kubernetes_namespace" "prometheus" {
+  count = var.prometheus_enabled ? 1 : 0
+  metadata {
+    name = "prometheus"
+  }
+}
 
 resource "helm_release" "kube_prometheus_stack" {
   count           = var.prometheus_enabled ? 1 : 0
@@ -5,7 +11,7 @@ resource "helm_release" "kube_prometheus_stack" {
   repository      = "https://prometheus-community.github.io/helm-charts"
   chart           = "kube-prometheus-stack"
   version         = var.prometheus_version
-  namespace       = var.namespace
+  namespace       = kubernetes_namespace.prometheus[0].metadata[0].name
   atomic          = false
   cleanup_on_fail = true
   timeout         = 1200
@@ -25,7 +31,7 @@ resource "kubernetes_config_map" "mermin_dashboard" {
 
   metadata {
     name      = "mermin-grafana-dashboard"
-    namespace = var.namespace
+    namespace = kubernetes_namespace.prometheus[0].metadata[0].name
 
     labels = {
       grafana_dashboard = "1"
@@ -90,7 +96,7 @@ locals {
       }
     }
 
-    "prometheus-windows-exporter" = {
+    prometheus-windows-exporter = {
       prometheus = {
         monitor = {
           enabled = false
@@ -161,7 +167,7 @@ locals {
           type       = "tempo"
           access     = "proxy"
           orgId      = 1
-          url        = "http://tempo-gateway.${var.namespace}.svc.cluster.local"
+          url        = "http://tempo-gateway.tempo.svc.cluster.local"
           basicAuth  = false
           version    = 1
           editable   = true
@@ -177,7 +183,7 @@ locals {
           name     = "Loki"
           type     = "loki"
           access   = "proxy"
-          url      = "http://loki-gateway.${var.namespace}.svc.cluster.local"
+          url      = "http://loki-gateway.loki.svc.cluster.local"
           editable = true
           jsonData = {
             maxLines = 1000
@@ -187,7 +193,7 @@ locals {
           name      = "Mimir"
           type      = "prometheus"
           uid       = "mimir"
-          url       = "http://mimir-gateway.${var.namespace}.svc.cluster.local/prometheus"
+          url       = "http://mimir-gateway.mimir.svc.cluster.local/prometheus"
           access    = "proxy"
           isDefault = false
           jsonData = {

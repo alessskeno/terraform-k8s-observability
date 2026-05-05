@@ -1,3 +1,9 @@
+resource "kubernetes_namespace" "alloy" {
+  count = var.alloy_enabled ? 1 : 0
+  metadata {
+    name = "alloy"
+  }
+}
 
 resource "helm_release" "alloy" {
   count           = var.alloy_enabled ? 1 : 0
@@ -5,7 +11,7 @@ resource "helm_release" "alloy" {
   name            = "alloy"
   repository      = "https://grafana.github.io/helm-charts"
   chart           = "alloy"
-  namespace       = var.namespace
+  namespace       = kubernetes_namespace.alloy[0].metadata[0].name
   atomic          = false
   cleanup_on_fail = true
   max_history     = 10
@@ -20,7 +26,7 @@ resource "kubernetes_config_map" "alloy_config" {
   count = var.alloy_enabled ? 1 : 0
   metadata {
     name      = "alloy-config"
-    namespace = var.namespace
+    namespace = kubernetes_namespace.alloy[0].metadata[0].name
   }
 
   data = {

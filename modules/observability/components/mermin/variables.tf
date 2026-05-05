@@ -4,11 +4,6 @@ variable "mermin_enabled" {
   default     = true
 }
 
-variable "namespace" {
-  description = "Namespace to deploy mermin"
-  type        = string
-}
-
 variable "mermin_version" {
   description = "Mermin Helm chart version"
   type        = string

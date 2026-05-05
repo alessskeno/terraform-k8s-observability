@@ -1,13 +1,6 @@
-resource "kubernetes_namespace" "observability" {
-  metadata {
-    name = var.namespace
-  }
-}
-
 module "cert_manager" {
   source = "./components/cert-manager"
 
-  namespace                   = kubernetes_namespace.observability.metadata[0].name
   cert_manager_enabled        = var.cert_manager_enabled
   cert_manager_version        = var.cert_manager_version
   cert_manager_cluster_issuer = var.cert_manager_cluster_issuer
@@ -17,7 +10,6 @@ module "cert_manager" {
 module "minio" {
   source = "./components/minio"
 
-  namespace     = kubernetes_namespace.observability.metadata[0].name
   minio_enabled = var.minio_enabled
   minio_version = var.minio_version
   access_key    = var.minio_access_key
@@ -45,7 +37,6 @@ locals {
 module "loki" {
   source = "./components/loki"
 
-  namespace          = kubernetes_namespace.observability.metadata[0].name
   env                = var.env
   loki_enabled       = var.loki_enabled
   loki_version       = var.loki_version
@@ -73,7 +64,6 @@ module "loki" {
 module "mimir" {
   source = "./components/mimir"
 
-  namespace          = kubernetes_namespace.observability.metadata[0].name
   env                = var.env
   mimir_enabled      = var.mimir_enabled
   mimir_version      = var.mimir_version
@@ -92,7 +82,6 @@ module "mimir" {
 module "tempo" {
   source = "./components/tempo"
 
-  namespace          = kubernetes_namespace.observability.metadata[0].name
   env                = var.env
   tempo_enabled      = var.tempo_enabled
   tempo_version      = var.tempo_version
@@ -114,18 +103,18 @@ module "tempo" {
 module "prometheus" {
   source = "./components/prometheus"
 
-  namespace              = kubernetes_namespace.observability.metadata[0].name
-  env                    = var.env
-  prometheus_enabled     = var.prometheus_enabled
-  prometheus_version     = var.prometheus_version
-  grafana_enabled        = var.grafana_enabled
+  env                = var.env
+  prometheus_enabled = var.prometheus_enabled
+  prometheus_version = var.prometheus_version
+  grafana_enabled    = var.grafana_enabled
+
   domain                 = var.domain
   grafana_admin_password = var.grafana_admin_password
   ingress_class_name     = var.ingress_class_name
 
   cert_manager_enabled        = var.cert_manager_enabled
   cert_manager_cluster_issuer = local.issuer_name
-  mimir_remote_write_url      = var.mimir_enabled ? "http://mimir-gateway.${var.namespace}.svc.cluster.local:80/api/v1/push" : ""
+  mimir_remote_write_url      = var.mimir_enabled ? "http://mimir-gateway.mimir.svc.cluster.local:80/api/v1/push" : ""
 
   mimir_enabled = var.mimir_enabled
   loki_enabled  = var.loki_enabled
@@ -142,7 +131,6 @@ module "prometheus" {
 module "alloy" {
   source = "./components/alloy"
 
-  namespace       = kubernetes_namespace.observability.metadata[0].name
   env             = var.env
   alloy_enabled   = var.alloy_enabled
   alloy_version   = var.alloy_version
@@ -157,11 +145,10 @@ module "alloy" {
 module "opentelemetry" {
   source = "./components/opentelemetry"
 
-  namespace                      = kubernetes_namespace.observability.metadata[0].name
   env                            = var.env
   opentelemetry_enabled          = var.opentelemetry_enabled
   opentelemetry_operator_version = var.opentelemetry_operator_version
-  tempo_endpoint                 = "tempo-distributor.${var.namespace}.svc.cluster.local:4317"
+  tempo_endpoint                 = "tempo-distributor.tempo.svc.cluster.local:4317"
 
   depends_on = [
     module.cert_manager
@@ -171,7 +158,6 @@ module "opentelemetry" {
 module "traefik" {
   source = "./components/traefik"
 
-  namespace       = kubernetes_namespace.observability.metadata[0].name
   traefik_enabled = var.traefik_enabled
   traefik_version = var.traefik_version
 }
@@ -179,7 +165,6 @@ module "traefik" {
 module "mermin" {
   source = "./components/mermin"
 
-  namespace      = kubernetes_namespace.observability.metadata[0].name
   env            = var.env
   mermin_enabled = var.mermin_enabled
   mermin_version = var.mermin_version
@@ -187,4 +172,5 @@ module "mermin" {
   depends_on = [
     module.alloy
   ]
+
 }

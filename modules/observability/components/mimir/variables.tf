@@ -3,11 +3,6 @@ variable "env" {
   type        = string
 }
 
-variable "namespace" {
-  description = "Namespace to deploy mimir"
-  type        = string
-}
-
 variable "mimir_enabled" {
   description = "Enable Mimir"
   type        = bool
