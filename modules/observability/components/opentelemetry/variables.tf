@@ -3,6 +3,11 @@ variable "env" {
   type        = string
 }
 
+variable "namespace" {
+  description = "Namespace to deploy opentelemetry"
+  type        = string
+}
+
 variable "opentelemetry_enabled" {
   description = "Enable OpenTelemetry"
   type        = bool

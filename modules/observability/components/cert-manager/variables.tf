@@ -4,6 +4,11 @@ variable "cert_manager_enabled" {
   default     = true
 }
 
+variable "namespace" {
+  description = "Namespace to deploy cert-manager"
+  type        = string
+}
+
 variable "domain" {
   description = "Domain name"
   type        = string

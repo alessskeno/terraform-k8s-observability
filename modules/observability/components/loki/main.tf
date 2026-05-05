@@ -1,12 +1,3 @@
-resource "kubernetes_namespace" "loki" {
-  count = var.loki_enabled ? 1 : 0
-  metadata {
-    name = "loki"
-  }
-  lifecycle {
-    ignore_changes = [metadata[0].annotations, metadata[0].labels]
-  }
-}
 
 resource "helm_release" "loki" {
   count           = var.loki_enabled ? 1 : 0
@@ -14,7 +5,7 @@ resource "helm_release" "loki" {
   name            = "loki"
   repository      = "https://grafana.github.io/helm-charts"
   chart           = "loki"
-  namespace       = kubernetes_namespace.loki[0].metadata[0].name
+  namespace       = var.namespace
   atomic          = false
   cleanup_on_fail = true
   max_history     = 10

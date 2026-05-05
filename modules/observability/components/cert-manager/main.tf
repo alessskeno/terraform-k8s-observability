@@ -7,25 +7,12 @@ terraform {
   }
 }
 
-resource "kubernetes_namespace" "cert_manager" {
-  count = var.cert_manager_enabled ? 1 : 0
-  metadata {
-    name = "cert-manager"
-  }
-  lifecycle {
-    ignore_changes = [
-      metadata[0].annotations,
-      metadata[0].labels
-    ]
-  }
-}
-
 resource "helm_release" "cert_manager" {
   count      = var.cert_manager_enabled ? 1 : 0
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  namespace  = kubernetes_namespace.cert_manager[0].metadata[0].name
+  namespace  = var.namespace
   version    = var.cert_manager_version
   atomic     = true
 
@@ -48,7 +35,7 @@ resource "kubectl_manifest" "selfsigned_issuer" {
     kind       = "Issuer"
     metadata = {
       name      = "selfsigned-issuer"
-      namespace = helm_release.cert_manager[0].namespace
+      namespace = var.namespace
     }
     spec = {
       selfSigned = {}
@@ -67,7 +54,7 @@ resource "kubectl_manifest" "cluster_root_ca" {
     kind       = "Certificate"
     metadata = {
       name      = "cluster-root-ca"
-      namespace = helm_release.cert_manager[0].namespace
+      namespace = var.namespace
     }
     spec = {
       isCA       = true

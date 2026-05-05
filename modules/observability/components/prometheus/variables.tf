@@ -3,6 +3,11 @@ variable "env" {
   type        = string
 }
 
+variable "namespace" {
+  description = "Namespace to deploy prometheus"
+  type        = string
+}
+
 variable "prometheus_enabled" {
   description = "Enable Prometheus"
   type        = bool

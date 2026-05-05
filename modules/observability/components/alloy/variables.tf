@@ -3,6 +3,11 @@ variable "env" {
   type        = string
 }
 
+variable "namespace" {
+  description = "Namespace to deploy alloy"
+  type        = string
+}
+
 variable "cluster_engine" {
   description = "Cluster engine type (rke2, kind, etc.)"
   type        = string

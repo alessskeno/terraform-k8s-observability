@@ -7,22 +7,13 @@ terraform {
   }
 }
 
-resource "kubernetes_namespace" "opentelemetry" {
-  count = var.opentelemetry_enabled ? 1 : 0
-  metadata {
-    name = "opentelemetry-operator-system"
-  }
-}
-
-
-
 resource "helm_release" "opentelemetry_operator" {
   count           = var.opentelemetry_enabled ? 1 : 0
   name            = "opentelemetry-operator"
   repository      = "https://open-telemetry.github.io/opentelemetry-helm-charts"
   chart           = "opentelemetry-operator"
   version         = var.opentelemetry_operator_version
-  namespace       = kubernetes_namespace.opentelemetry[0].metadata[0].name
+  namespace       = var.namespace
   atomic          = false
   cleanup_on_fail = true
   timeout         = 300
@@ -57,12 +48,12 @@ resource "kubectl_manifest" "otel_instrumentation" {
     kind       = "Instrumentation"
     metadata = {
       name      = "alloy-instrumentation"
-      namespace = kubernetes_namespace.opentelemetry[0].metadata[0].name
+      namespace = var.namespace
     }
     spec = {
       # Route ALL telemetry to your Grafana Alloy service
       exporter = {
-        endpoint = "http://alloy.alloy.svc.cluster.local:4317"
+        endpoint = "http://alloy.${var.namespace}.svc.cluster.local:4317"
       }
       propagators = ["tracecontext", "baggage", "b3"]
       sampler = {

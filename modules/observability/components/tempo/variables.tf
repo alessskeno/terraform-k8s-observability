@@ -3,6 +3,11 @@ variable "env" {
   type        = string
 }
 
+variable "namespace" {
+  description = "Namespace to deploy tempo"
+  type        = string
+}
+
 variable "tempo_enabled" {
   description = "Enable Tempo"
   type        = bool

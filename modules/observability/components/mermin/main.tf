@@ -1,16 +1,10 @@
-resource "kubernetes_namespace" "mermin" {
-  count = var.mermin_enabled ? 1 : 0
-  metadata {
-    name = "mermin"
-  }
-}
 
 resource "helm_release" "mermin" {
   count           = var.mermin_enabled ? 1 : 0
   name            = "mermin"
   repository      = "https://elastiflow.github.io/mermin"
   chart           = "mermin"
-  namespace       = kubernetes_namespace.mermin[0].metadata[0].name
+  namespace       = var.namespace
   atomic          = false
   cleanup_on_fail = true
   timeout         = 300
@@ -67,7 +61,7 @@ resource "helm_release" "mermin" {
               }
             ]
             namespaceSelector = {
-              matchNames = ["mermin"]
+              matchNames = [var.namespace]
             }
         } }
       ]

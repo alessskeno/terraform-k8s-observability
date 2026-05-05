@@ -11,8 +11,9 @@ module "observability" {
   # ============================================================================
   # 1. Environment & Global Settings
   # ============================================================================
-  env    = "dev"
-  domain = var.domain
+  env       = "dev"
+  domain    = var.domain
+  namespace = "observability"
 
   cluster_engine = "kind"     # kind, rke2, etc.
   dns_service    = "kube-dns" # kube-dns, rke2-coredns-rke2-coredns

@@ -1,9 +1,3 @@
-resource "kubernetes_namespace" "mimir" {
-  count = var.mimir_enabled ? 1 : 0
-  metadata {
-    name = "mimir"
-  }
-}
 
 resource "helm_release" "mimir" {
   count           = var.mimir_enabled ? 1 : 0
@@ -11,7 +5,7 @@ resource "helm_release" "mimir" {
   repository      = "https://grafana.github.io/helm-charts"
   chart           = "mimir-distributed"
   version         = var.mimir_version
-  namespace       = kubernetes_namespace.mimir[0].metadata[0].name
+  namespace       = var.namespace
   atomic          = false
   cleanup_on_fail = true
   timeout         = 1200

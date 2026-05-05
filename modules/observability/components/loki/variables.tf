@@ -3,6 +3,11 @@ variable "env" {
   type        = string
 }
 
+variable "namespace" {
+  description = "Namespace to deploy loki"
+  type        = string
+}
+
 variable "loki_enabled" {
   description = "Enable Loki deployment"
   type        = bool
