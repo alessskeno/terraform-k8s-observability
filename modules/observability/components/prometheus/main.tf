@@ -74,6 +74,13 @@ locals {
   grafana_domain = "grafana-${var.env}.${var.domain}"
 
   prometheus_values = {
+    kubeProxy = {
+          service = {
+            selector = {
+              component = "kube-proxy"
+            }
+          }
+        }
     defaultRules = {
       rules = {
         windows = false
