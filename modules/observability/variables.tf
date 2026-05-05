@@ -16,6 +16,12 @@ variable "cluster_engine" {
   default     = "rke2"
 }
 
+variable "skip_namespaces" {
+  description = "Namespaces to skip in Alloy logs collection"
+  type        = list(string)
+  default     = ["cert-manager", "kube-system", "minio"]
+}
+
 variable "dns_service" {
   description = "DNS Service address (e.g., rke2-coredns-rke2-coredns or kube-dns.kube-system.svc.cluster.local)"
   type        = string

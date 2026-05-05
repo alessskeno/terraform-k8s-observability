@@ -50,6 +50,7 @@ module "observability" {
 
   alloy_enabled         = true
   opentelemetry_enabled = false
+  skip_namespaces       = ["cert-manager", "kube-system", "minio"]
 
   # ============================================================================
   # 4. Storage & Persistence Configuration

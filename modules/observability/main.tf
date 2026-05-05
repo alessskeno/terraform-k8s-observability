@@ -136,7 +136,7 @@ module "alloy" {
   alloy_version   = var.alloy_version
   cluster_engine  = var.cluster_engine
   loki_url        = module.loki.loki_push_url
-  skip_namespaces = ["cert-manager", "kube-system", "minio"]
+  skip_namespaces = var.skip_namespaces
   loki_enabled    = var.loki_enabled
   tempo_enabled   = var.tempo_enabled
   mimir_enabled   = var.mimir_enabled
